@@ -2,7 +2,7 @@
 
 Mono.js 是一个使用原生Javascript编写的动态前端框架，无需使用者编写html语句，仅需使用Javascript和CSS进行用户界面的构建。<br/>
 <br/>
-版本: 1.2(21a38b)<br/>
+版本: 1.2(21a38c)<br/>
 作者: jlywxy(jlywxy@outlook.com)<br/>
 Demo: https://jlywxy.top/, https://atari.jlywxy.top/<br/>
 <br/>
@@ -156,3 +156,7 @@ view2.attach(view)  // view2进行挂载
 * 定制控件的使用
 * 定制自己的控件
 * 方法说明
+## 2. 杂项
+* 版本命名规则：
+年(后两位数字) + 开发状态(Alpha=a,Beta=b,Release=r) + 十六进制日期(hex(0908)="38c")<br/>
+21 + a + 38c<br/>
