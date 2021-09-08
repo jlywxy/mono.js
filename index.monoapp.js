@@ -42,6 +42,7 @@ var monodetail = new View([
         (*)与使用旧版框架开发的Mono应用完全兼容<br>\
         (*)定制控件：导航栏(MonoNavigationBar)、按钮(MonoButton)、图像(MonoImage)、消息对话框(MonoDialog)<br>\
         (*)布局响应器(ViewAdapter)<br>\
+        (*)兼容性检查和缓存控制<br/>\
         (*)[BETA]Javascript控制下的css transition位置过渡动画(MoveController)与Cubic Bezier速度曲线<br>\
         <br>\
         下一版本将要完成的技术特性：<br>\
