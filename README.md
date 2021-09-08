@@ -6,7 +6,7 @@ Mono.js 是一个使用原生Javascript编写的动态前端框架，无需使�
 作者: jlywxy(jlywxy@outlook.com)<br/>
 Demo: https://jlywxy.top/, https://atari.jlywxy.top/<br/>
 <br/>
-“完全抛弃html语句的前端框架”<br/>
+“一个无需编写html语句的前端框架”<br/>
 ```javascript
 mono.app(
     new View([
@@ -93,6 +93,7 @@ new View([
 })
 ```
 就是这么简单👀。<br/><br/>
+注意: 若视图无需嵌套子视图，建议使用TinyView以提升性能，还可以增加代码整洁度。
 ### 1.3.2 视图的命名
 可以在声明树时为视图取名，也可以在树外部为其取名：
 ```javascript
