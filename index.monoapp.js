@@ -1,8 +1,8 @@
 /*
  * Mono.js 应用
- * 版本 1.2(21a38c)
+ * 版本 1.2(21a39e)
  */
-mono.init()
+var mono=new Mono(document)
 // "信息"栏
 var monoinfo = new View([
     new TinyView({
@@ -14,13 +14,13 @@ var monoinfo = new View([
     new MonoInlineButton("this is", () => { thisisindicator.properties.innerHTML = "this is"; thisisindicator.update() }),
     thisisindicator = new TinyView({ style: { "display": "inline-block" } }),
     new MonoButton("mono.js", () => {
-        MonoDialog.new("Mono.js", "Web Framework", [
+        MonoDialog.new(mono,"Mono.js", "Web Framework", [
             { text: "OK", bold: true, onclick: () => { } },
             { text: "Yes", bold: false, onclick: () => { } }
         ])
     }),
     new TinyView({
-        innerHTML: "Mono.js 版本 1.2(21a38b)<br>",
+        innerHTML: "Mono.js 版本 1.2(21a39e)<br>",
         style: { padding: "10px", }
     }),
     image = new MonoImage("/appleevent2021_hero_endframe__8xosbwdvpaqe_large_2x.png"),
@@ -35,7 +35,7 @@ var monoinfo = new View([
 // "详情"栏
 var monodetail = new View([
     new TinyView({
-        innerHTML: "Mono.js 0.1 至 1.2(21a38c) 已完成的技术特性：<br>\
+        innerHTML: "Mono.js 0.1 至 1.2(21a39e) 已完成的技术特性：<br>\
         (*)文档树构建与动态维护、影子文档树<br>\
         (*)不会丢失数据的节点挂载、摘除和重新挂载<br>\
         (*)视图的数据绑定(Binding)<br>\
@@ -44,12 +44,14 @@ var monodetail = new View([
         (*)布局响应器(ViewAdapter)<br>\
         (*)兼容性检查和缓存控制<br/>\
         (*)[BETA]Javascript控制下的css transition位置过渡动画(MoveController)与Cubic Bezier速度曲线<br>\
+        (*)[BETA]URL系统<br>\
         <br>\
         下一版本将要完成的技术特性：<br>\
-        ( )定制控件：容器、媒体播放器(MonoAudio)<br>\
-        ( )Javascript控制下的更多类型的过渡动画<br>\
+        ( )Robustness改进<br>\
+        ( )定制控件<br>\
+        ( )Javascript过渡动画<br>\
         ( )视图控制器(ViewController)<br>\
-        ( )嵌入的WebAssembly加载器和基于WebAssembly的逻辑加密的视图<br>\
+        ( )基于WebWorker和WebAssembly的隔离上下文<br>\
         <br>\
         "
     }),
@@ -57,7 +59,7 @@ var monodetail = new View([
         new MonoInlineButton("+ 时间戳", () => {
             let t=new Date().getTime()
             new View([new MonoInlineButton(t,()=>{
-                MonoDialog.new(new Date(parseInt(t)).toLocaleString(),null) 
+                MonoDialog.new(mono,new Date(parseInt(t)).toLocaleString(),null) 
             })], { style: { float: "left" } }).attach(side0)
         }),
         new MonoInlineButton("移动到底部", () => {

@@ -1,8 +1,8 @@
 /*
  * Mono.js 实用工具
- * 版本 1.2(21a38c)
+ * 版本 1.2(21a39e)
  */
-monoversion.monoutil = "21a38c"
+monoversion.monoutil = "21a39e"
 // importView产生的缓存, 字典格式{url: 脚本源码}
 var importcache = {}
 // 开启视图导入器缓存，减少延时。在开发阶段不要设置为true。

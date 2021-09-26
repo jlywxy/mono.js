@@ -1,15 +1,36 @@
 /*
  * Mono.js 框架导入器
- * 版本 1.2(21a38c)
+ * 版本 1.21(21a39e)
  */
-monoversion = { monoimport: "21a38c" }
+monoversion = { monoimport: "21a39e" }
 // ------------------------------------------------------- //
+var pageAndParamPath=window.location.search.substring(1)
+var paramPos=pageAndParamPath.indexOf(":")
+var pagePath=""
+var pageParams=""
+if(paramPos!=-1){
+    pagePath=pageAndParamPath.substring(0,paramPos)
+    pageParams=pageAndParamPath.substring(paramPos+1)
+}else{
+    pagePath=pageAndParamPath
+    pageParams=""
+}  
+var appPath=""
+if(pagePath==""){
+    appPath="index.monoapp.js"
+}else{
+    if(pagePath.endsWith("/")){
+        appPath=pagePath+"index.monoapp.js"
+    }else{
+        appPath=pagePath+".monoapp.js"
+    }
+}
 
 imports = [
     "/mono/mono.js",
     "/mono/monoutil.js",
     "/mono/monoext.js",
-    "index.monoapp.js",  // Mono.js应用的文件名，可以修改
+    appPath
 ]
 
 // ------------------------------------------------------- //
@@ -19,7 +40,7 @@ var monoImporterPreference = {
     imports: imports,
     internationalize: {
         wait: "正在载入页面",
-        loadPage: "正在载入页面<br><br><br>🌀正在载入文件: ",
+        loadPage: "正在载入页面<br><br><br>正在载入文件: ",
         loadErr: "无法载入页面<br><br><br>⚠️未能载入文件: ",
         runtimeErr: "⚠️Mono.js 运行时错误",
         err: "错误类型",
@@ -30,19 +51,22 @@ var monoImporterPreference = {
 
 // 不要修改以下内容
 alertstatus = 0
-window.addEventListener("error", (e) => {
-    let msg=e.message
-    let col=e.colno
-    let url=e.filename
-    let line=e.lineno
-    let t = monoImporterPreference.internationalize.runtimeErr + "\n\n" + monoImporterPreference.internationalize.err + ": " + msg + "\n" + "URL: " + url + "\n" + monoImporterPreference.internationalize.pos + ": " + line + ":" + col + "\n\n"
-    if (alertstatus == 0 && !confirm(t + monoImporterPreference.internationalize.showAlertAgain)) {
-        alertstatus = 1
-    }
-    console.log(t)
-    document.body.innerHTML += t.replaceAll("\n", "<br>")
-    oe()
-})
+// 错误处理
+// window.addEventListener("error", (e) => {
+//     onerr(e)
+// })
+// function onerr(e){
+//     let msg=e.message
+//     let col=e.colno
+//     let url=e.filename
+//     let line=e.lineno
+//     let t = monoImporterPreference.internationalize.runtimeErr + "\n\n" + monoImporterPreference.internationalize.err + ": " + msg + "\n" + "URL: " + url + "\n" + monoImporterPreference.internationalize.pos + ": " + line + ":" + col + "\n\n"
+//     if (alertstatus == 0 && !confirm(t + monoImporterPreference.internationalize.showAlertAgain)) {
+//         alertstatus = 1
+//     }
+//     console.log(t)
+//     document.body.innerHTML += t.replaceAll("\n", "<br>")
+// }
 document.getElementById("monoloading").style.display = "none"
 var ios_indicator_svg = '<svg version="1.1" x="0px" y="0px" viewBox="0 0 2400 2400" xml:space="preserve"><g stroke-width="200" stroke-linecap="round" stroke="#000000" fill="none" id="spinner"><line x1="1200" y1="600" x2="1200" y2="100"/><line opacity="0.5" x1="1200" y1="2300" x2="1200" y2="1800"/><line opacity="0.917" x1="900" y1="680.4" x2="650" y2="247.4"/><line opacity="0.417" x1="1750" y1="2152.6" x2="1500" y2="1719.6"/><line opacity="0.833" x1="680.4" y1="900" x2="247.4" y2="650"/><line opacity="0.333" x1="2152.6" y1="1750" x2="1719.6" y2="1500"/><line opacity="0.75" x1="600" y1="1200" x2="100" y2="1200"/><line opacity="0.25" x1="2300" y1="1200" x2="1800" y2="1200"/><line opacity="0.667" x1="680.4" y1="1500" x2="247.4" y2="1750"/><line opacity="0.167" x1="2152.6" y1="650" x2="1719.6" y2="900"/><line opacity="0.583" x1="900" y1="1719.6" x2="650" y2="2152.6"/><line opacity="0.083" x1="1750" y1="247.4" x2="1500" y2="680.4"/><animateTransform attributeName="transform" attributeType="XML" type="rotate" keyTimes="0;0.08333;0.16667;0.25;0.33333;0.41667;0.5;0.58333;0.66667;0.75;0.83333;0.91667" values="0 1199 1199;30 1199 1199;60 1199 1199;90 1199 1199;120 1199 1199;150 1199 1199;180 1199 1199;210 1199 1199;240 1199 1199;270 1199 1199;300 1199 1199;330 1199 1199" dur="0.83333s" begin="0s" repeatCount="indefinite" calcMode="discrete"/></g></svg>'
 var loading_logo = "<div style='width:25px;height:25px;float:left;;margin-right:-60px;margin-top:-2px;'>" + ios_indicator_svg + "</div>"
@@ -126,7 +150,8 @@ class Collect {
         }
     }
 }
-function loadScriptBundle(chain, callback, tickCallback) {
+function loadScriptBundle(chain, callback, errorCallback, tickCallback) {
+    !tickCallback?tickCallback=()=>{}:0
     let importedScripts = []
     let importedURLs = []
     let cbcount = 0
@@ -141,7 +166,8 @@ function loadScriptBundle(chain, callback, tickCallback) {
             c.collect()
         }, (u) => {
             console.error("monoutil: chain error: " + u)
-            callback(u)
+            errorCallback(u)
+            return
         })
     }
     function collect() {
@@ -168,14 +194,10 @@ for (let u of monoImporterPreference.imports) {
         importsNoCache.push(u)
     }
 }
-loadScriptBundle(importsNoCache, (err) => {
-    if (err) {
-        // 加载错误
-        printProgress(monoImporterPreference.internationalize.loadErr + err)
-    } else {
-        // 加载完成，移除指示器
-        document.body.removeChild(loaderdiv)
-    }
+loadScriptBundle(importsNoCache, () => {
+    document.body.removeChild(loaderdiv)
+}, (e)=>{
+    printProgress(monoImporterPreference.internationalize.loadErr + e)
 }, (u) => {
     // 加载完成每一个文件
     printProgress(monoImporterPreference.internationalize.loadPage + u)

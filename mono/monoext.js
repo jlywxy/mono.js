@@ -1,8 +1,8 @@
 /*
  * Mono.js 扩展视图插件
- * 版本 1.2(21a38c)
+ * 版本 1.2(21a39e)
  */
-monoversion.monoext = "21a38c"
+monoversion.monoext = "21a39e"
 // 视图插件设置(国际化)
 var monoExtensionPreference = {
     internationalize: {
@@ -236,7 +236,7 @@ class MonoDialogButton extends TinyView {
             }
         })
         this.properties.attributes.onmousedown = () => {
-            this.domElement.style["background-color"] = "#cfcfcf"
+            this.domElement.style["background-color"] = "#dfdfdf"
         }
         this.properties.attributes.ontouchstart = this.properties.attributes.onmousedown
         this.properties.attributes.onmouseup = () => {
@@ -246,7 +246,7 @@ class MonoDialogButton extends TinyView {
     }
 }
 class MonoDialog {
-    static new(title, text, buttons) {
+    static new(parentMono, title, text, buttons) {
         let destroyPanel
         let buttonpanel = new View([], {
             tagName: "tr"
@@ -277,7 +277,7 @@ class MonoDialog {
                     "font-weight": "520",
                     "font-size": "18px",
                     "text-align": "center",
-                    "word-break": "break-all",
+                    //"word-break": "break-all",
                     "word-wrap": "break-word"
                 }
             }),
@@ -296,7 +296,7 @@ class MonoDialog {
                         "margin-bottom": "65px",
                         "font-size": "16px",
                         "text-align": "center",
-                        "word-break": "break-all",
+                        //"word-break": "break-all",
                         "word-wrap": "break-word"
                     }
                 }),
@@ -339,20 +339,22 @@ class MonoDialog {
                 "border-radius": "10px",
                 "backdrop-filter": "blur(10px)",
                 "-webkit-backdrop-filter": "blur(10px)",
-                "transition": "all 0.4s cubic-bezier(0.17,0.73,0,1)",
+                "transition": "all 0.5s cubic-bezier(0.17,0.73,0,1)",
+                "user-select": "none",
+                "-webkit-user-select": "none",
                 opacity: "1"
             }
         })
-        panel.attach(mono.topmost)
-        showTopmost()
-        panel.domElement.style.transform = "translate(-50%,-50%) scale(1.2)"
+        panel.attach(parentMono.topmost)
+        parentMono.showTopmost()
+        panel.domElement.style.transform = "translate(-50%,-50%) scale(1.18)"
         panel.domElement.style.opacity = "0"
         setTimeout(() => {
             panel.domElement.style.transform = "translate(-50%,-50%) scale(1)"
             panel.domElement.style.opacity = "1"
         }, 20)
         destroyPanel = () => {
-            hideTopmost();
+            parentMono.hideTopmost();
             panel.domElement.style.opacity = "0"
             setTimeout(() => {
                 panel.dispose()

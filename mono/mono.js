@@ -1,12 +1,12 @@
 console.log("\
 \n\
  * %cMono.js Web框架%c\n\
- * 版本 1.2(21a38c)\n\
+ * 版本 1.2(21a39e)\n\
  * 此框架的兼容性目前仅在Chrome、  \n   Safari和Firefox浏览器中测试过。\n\
  @ jlywxy https://github.com/jlywxy\
 \n\
 ", 'font-weight: bold;', 'font-weight: normal;')
-monoversion.mono = "21a38c"
+monoversion.mono = "21a39e"
 function compatibilityCheck() {  // 版本检查
     let version = monoversion.mono
     if (monoversion.monoimport == version &&
@@ -17,29 +17,41 @@ function compatibilityCheck() {  // 版本检查
     else {
         setTimeout(()=>window.location.reload(),3000)
         localStorage.setItem("frameworkNotCompatible", "true")
-        setTimeout(()=>MonoDialog.new("框架版本不兼容","Framework version not compatible:" + JSON.stringify(monoversion)),500)
+        setTimeout(()=>MonoDialog.new(mono,"框架版本不兼容","需要重新载入页面。<br>Framework version not compatible:" + JSON.stringify(monoversion)),500)
         //throw new Error("框架版本不兼容。Framework version not compatible:" + JSON.stringify(monoversion))
     }
 }
-var mono = {  // mono对象
-    init() {  // 初始化mono
+class Mono{
+    root=null  // 根节点
+    topmost=null  // 遮罩层
+    styleElement=null  // 默认的样式DOM对象
+    appElement=null  // app DOM对象
+    bodyElement=null  // body DOM对象
+    domElement=null // 文档DOM对象
+    constructor(dom){
+        this.init(dom)
+    }
+    init(dom){
         compatibilityCheck()
-        this.bodyElement = document.body
-        this.styleElement = document.createElement("style")
+        this.domElement=dom
+        this.bodyElement = this.domElement.body
+        this.styleElement = this.domElement.createElement("style")
         this.styleElement.id = "monostyle"
-        document.head.appendChild(this.styleElement)
+        this.domElement.head.appendChild(this.styleElement)
         this.bodyElement.style.margin = 0
-        if (!document.getElementById("monoapp")) {
+        if (!this.domElement.getElementById("monoapp")) {
             console.log("mono: creating monoapp dom element")
-            this.appElement = document.createElement("div")
+            this.appElement = this.domElement.createElement("div")
             this.appElement.id = "monoapp"
             this.bodyElement.appendChild(this.appElement)
         } else {
-            this.appElement = document.getElementById("monoapp")
+            this.appElement = this.domElement.getElementById("monoapp")
         }
-    },
-    app(rootnode) {  // 应用接入点
+        return this
+    }
+    app(rootnode){
         try { this.root.dispose() } catch (e) { }
+        console.log("mono.js: init app")
         this.root = rootnode
         this.root.create()
         this.root.attachToDom(this.appElement)
@@ -64,47 +76,38 @@ var mono = {  // mono对象
         this.topmost.create()
         this.topmost.attachToDom(this.appElement)
         this.topmost.update()
-    },
-    root: null,  // 根节点
-    topmost: null,  // 遮罩层
-    styleElement: null,  // 默认的样式DOM对象
-    appElement: null,  // app DOM对象
-    bodyElement: null,  // body DOM对象
+        return this
+    }
+    showTopmost() {  // 显示顶层遮罩背景
+        this.topmost.properties.style.width = window.innerWidth + "px"
+        this.topmost.properties.style.height = window.innerHeight + "px"
+        this.topmost.properties.style.display = "block"
+        this.topmost.update()
+        setTimeout(() => {  // 隐藏顶层遮罩背景
+            this.topmost.properties.style["background-color"] = "rgba(0,0,0,0.25)"
+            this.topmost.update()
+        }, 20)
+    }
+    hideTopmost() {
+        this.topmost.properties.style["background-color"] = "rgba(0,0,0,0)"
+        this.topmost.update()
+        setTimeout(() => {
+            this.topmost.properties.style.display = "none"
+            this.topmost.update()
+        }, 200)
+    
+    }
 }
-function showTopmost() {  // 显示顶层遮罩背景
-    mono.topmost.properties.style.display = "block"
-    mono.topmost.update()
-    setTimeout(() => {  // 隐藏顶层遮罩背景
-        mono.topmost.properties.style["background-color"] = "rgba(0,0,0,0.4)"
-        mono.topmost.update()
-    }, 20)
-}
-function hideTopmost() {
-    mono.topmost.properties.style["background-color"] = "rgba(0,0,0,0)"
-    mono.topmost.update()
-    setTimeout(() => {
-        mono.topmost.properties.style.display = "none"
-        mono.topmost.update()
-    }, 200)
-
-}
-window.addEventListener("resize", () => {
-    mono.topmost.properties.style.width = window.innerWidth + "px"
-    mono.topmost.properties.style.height = window.innerHeight + "px"
-    mono.topmost.update()
-})
 class TinyView {  // 小视图
     constructor(properties) {
         this.type = this.constructor.name
         this.properties = properties ? Object.assign(viewProperty(), properties) : viewProperty()
         this.parentNode = null
         this.tagName = this.properties.tagName ? this.properties.tagName : "div"
-        this.created = false
     }
     create() {  // 创建DOM对象
         if (this.properties.oncreate && this.properties.oncreate() == false) return
         this.domElement = document.createElement(this.tagName)
-        this.created = true
     }
     attach(rootnode) {  // 将对象挂载到新父对象
         if (this.properties.onattach && this.properties.onattach() == false) return
@@ -189,8 +192,13 @@ class TinyView {  // 小视图
             this.domElement.offsetHeight
         ]
     }
-    get attached() {
-        if (this.parentNode) return true
+    get attached() {  // 是否已经挂载到父DOM对象
+        if (!this.created) return false
+        if (this.domElement.parentNode) return true
+        return false
+    }
+    get created(){  // 是否已创建DOM对象
+        if (this.domElement) return true
         return false
     }
 }
