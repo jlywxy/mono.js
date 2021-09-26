@@ -138,7 +138,7 @@ var subview1=new View([])
 subview1.attach(view)
 subview1.detach()
 ```
-若要将视图挂载到未挂载的父视图时，需使用append方法，不直接操作DOM树，因为未挂载的父视图没有DOM对象。
+若要将视图挂载到未挂载的父视图时，需使用append方法，此方法不直接操作DOM树，因为未挂载的父视图没有DOM对象。
 ```javascript
 var mono=new Mono(document)
 var view=new View([])
@@ -148,7 +148,8 @@ var view3=new View([])
 view2.append(view3)  // view2未挂载
 view2.attach(view)  // view2进行挂载
 ```
-attach为热挂载，append为冷挂载。
+attach为热挂载，append为冷挂载，且挂载方向不同。<br/>
+若需要将已经挂载的视图重新挂载到另一父视图上，仅需调用attach方法，无需在此之前调用detach方法。
 ### 1.3.4 视图的更新
 在运行时，修改Mono影子树的属性和样式并不会立即操作DOM树，这是为了提升性能。<br/>
 `view.update()`更新所有属性、样式，<br/>
@@ -168,6 +169,6 @@ attach为热挂载，append为冷挂载。
 21 + a + 38c<br/>
 ### 2.2 bugfixed
 21a39e:<br/>
-* 修复了TinyView的 `attached` getter(判断模式从TinyView的父对象变为DOM的父对象的存在性)
-* 修改了TinyView的 `created` getter(判断模式从修改created属性值变为判断DOM对象的存在性)
-* 修复了Mono新的声明模式之下MonoDialog的调用形式(参数第一位为父Mono对象)
+* 修复了TinyView的 `attached` getter(判断模式从TinyView的父对象的存在性变为DOM的父对象的存在性)
+* 修改了TinyView的 `created` getter(判断模式从验证created成员属性值变为判断DOM对象的存在性)
+* 修复了Mono新的声明模式之下MonoDialog的调用形式(参数第一位为Mono根对象)
