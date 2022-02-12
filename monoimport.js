@@ -1,16 +1,17 @@
 /*
  * Mono.js 框架导入器
- * 版本 1.21(21a39e)
+ * 版本 22axd4
  */
-monoversion = { monoimport: "21a39e" }
+monoversion = { monoimport: "22axd4" }
 // ------------------------------------------------------- //
 var pageAndParamPath=window.location.search.substring(1)
-var paramPos=pageAndParamPath.indexOf(":")
+var paramPos=pageAndParamPath.indexOf("&")
 var pagePath=""
 var pageParams=""
 if(paramPos!=-1){
     pagePath=pageAndParamPath.substring(0,paramPos)
     pageParams=pageAndParamPath.substring(paramPos+1)
+    if(pageParams.indexOf("&")!=-1)pageParams=pageParams.substring(0,pageParams.indexOf("&"))
 }else{
     pagePath=pageAndParamPath
     pageParams=""

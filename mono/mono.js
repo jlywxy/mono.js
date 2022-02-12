@@ -1,12 +1,12 @@
 console.log("\
 \n\
  * %cMono.js Web框架%c\n\
- * 版本 1.2(21a39e)\n\
+ * 版本 22axd4\n\
  * 此框架的兼容性目前仅在Chrome、  \n   Safari和Firefox浏览器中测试过。\n\
  @ jlywxy https://github.com/jlywxy\
 \n\
 ", 'font-weight: bold;', 'font-weight: normal;')
-monoversion.mono = "21a39e"
+monoversion.mono = "22axd4"
 function compatibilityCheck() {  // 版本检查
     let version = monoversion.mono
     if (monoversion.monoimport == version &&
@@ -114,7 +114,7 @@ class TinyView {  // 小视图
         if (!this.created) this.create()
         if (this.attached) this.detach()  // 若已挂载则先解挂
         this.parentNode = rootnode
-        rootnode.subviews.push(this)
+        if(rootnode.subviews.indexOf(this)==-1)rootnode.subviews.push(this)
         rootnode.domElement.appendChild(this.domElement)
         this.update()
     }
@@ -200,6 +200,13 @@ class TinyView {  // 小视图
     get created(){  // 是否已创建DOM对象
         if (this.domElement) return true
         return false
+    }
+    set text(value) {  //innerHTML get/set
+        this.properties.innerHTML = value
+        this.update()
+    }
+    get text() {
+        return this.properties.innerHTML
     }
 }
 function query(view) {  // 获得视图的路径

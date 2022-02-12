@@ -1,8 +1,8 @@
 /*
  * Mono.js 扩展视图插件
- * 版本 1.2(21a39e)
+ * 版本 22axd4
  */
-monoversion.monoext = "21a39e"
+monoversion.monoext = "22axd4"
 // 视图插件设置(国际化)
 var monoExtensionPreference = {
     internationalize: {
@@ -256,11 +256,12 @@ class MonoDialog {
         } else {
             let first = 0
             for (let b of buttons) {
+                b.onclick?0:b.onclick=()=>{}
                 if (first == 0) {
                     first = 1
-                    buttonpanel.append(new MonoDialogButton(b.text, b.bold, () => { destroyPanel(); b.onclick }, false))
+                    buttonpanel.append(new MonoDialogButton(b.text, b.bold, () => { b.onclick();destroyPanel();  }, false))
                 } else {
-                    buttonpanel.append(new MonoDialogButton(b.text, b.bold, () => { destroyPanel(); b.onclick }, true))
+                    buttonpanel.append(new MonoDialogButton(b.text, b.bold, () => { b.onclick();destroyPanel();  }, true))
                 }
             }
         }
@@ -412,3 +413,164 @@ class ViewAdapter {
 window.addEventListener("resize", () => {
     ViewAdapter.react()
 })
+
+
+class MonoSpacer extends TinyView { constructor(height) { super({ style: { height: height + "px" } }) } }
+class TextHint extends TinyView {
+    constructor(text) { super({ innerHTML: text, style: { "font-size": "13px", "font-weight": "bold", "margin": "8px", "margin-left": "18px", "color": "#606060" } }) } set text(value) {
+        this.properties.innerHTML = value
+        this.update()
+    }
+    get text() {
+        return this.properties.innerHTML
+    }
+}
+
+class ListHint extends TinyView { constructor(text) { super({ innerHTML: text, style: { "font-size": "12px", "margin": "3px", "margin-left": "25px", "font-weight": "400", "color": "#808080" } }) } }
+
+class Text extends TinyView {
+    constructor(text) { super({ innerHTML: text, style: { "margin": "8px", "display": "inline-block" } }) }
+    set text(value) {
+        this.properties.innerHTML = value
+        this.update()
+    }
+    get text() {
+        return this.properties.innerHTML
+    }
+}
+class Textbox extends TinyView {
+    constructor(value, placeholder, action, password) {
+        super({
+            tagName: "input",
+            attributes: {
+                type: password ? "password" : "text",
+                value: value ? value : "",
+                placeholder: placeholder ? placeholder : "",
+            },
+            style: {
+                "-webkit-appearance": "none",
+                "border": "none",
+                "font-size": "15px",
+                "width": "100%",
+                "outline": "none",
+                "background-color": "rgba(0,0,0,0)"
+            }
+        })
+        this.action = action ? action : () => { }
+        this.properties.attributes.oninput = () => { this.action(this.domElement.value) }
+    }
+    get text() {
+        return this.domElement.value
+    }
+    set text(value) {
+        this.properties.attributes.value = value
+        this.domElement.value = value
+    }
+}
+class TextField extends View{
+    constructor(textbox){
+        super([textbox],{
+            style:{
+                "padding": "5px",
+                "border-radius": "8px",
+                "background-color": "white"
+            }
+        })
+    }
+}
+
+class List extends View {
+    constructor(content) {
+        super(content, {
+            style: {
+                "background-color": "white",
+                "border-radius": "8px",
+                "margin": "8px",
+                "margin-left": "15px",
+                "margin-right": "15px",
+                "padding-left": "15px",
+                "overflow": "hidden"
+            }
+        })
+    }
+    update() {
+        for (let i of this.subviews) {
+            i.properties.style["border-bottom"] = "1px solid #ddd"
+        }
+        this.subviews[this.subviews.length - 1].properties.style["border-bottom"] = ""
+        super.update()
+    }
+}
+class ListTextItem extends TinyView {
+    constructor(content) {
+        super({
+            innerHTML: content,
+            style: {
+                padding: "13px",
+                "padding-left": "0",
+                color: "#202020",
+                "font-size": "15px",
+            }
+        })
+    }
+}
+class ListButton extends View {
+    constructor(text, onclick) {
+        let background = new TinyView({
+            style: {
+                "margin-left": "-30px",
+                "padding-right": "30px",
+                "margin-top": "-13px",
+                "width": "100%",
+                "height": "43px",
+                position: "absolute",
+                "font-size": "15px"
+            }
+        })
+        super([new TinyView({
+            innerHTML: text,
+            style: {
+                position: "absolute",
+                "z-index": 1,
+            }
+        }), background],
+            {
+                attributes: {
+                    onclick: onclick,
+                },
+                style: {
+                    position: "relative",
+                    padding: "13px",
+                    "padding-left": "0",
+                    "padding-bottom": "30px",
+                    color: "#0090ee",
+                    "-webkit-user-select": "none",
+                    "-webkit-tap-highlight-color": "transparent",
+                    width: "100%",
+                }
+            })
+        this.background = background
+        this.properties.attributes.onmousedown = () => {
+            this.background.domElement.style.transition = "background-color 0.1s cubic-bezier(0.17,0.73,0,1)"
+            this.background.domElement.style["background-color"] = "#d0d0d0"
+        }
+        this.properties.attributes.ontouchstart = this.properties.attributes.onmousedown
+        this.properties.attributes.onmouseup = () => {
+            this.background.domElement.style.transition = "background-color 0.25s"
+            this.background.domElement.style["background-color"] = "rgba(255,255,255,0)"
+        }
+        this.properties.attributes.ontouchend = this.properties.attributes.onmouseup
+    }
+}
+class ListItem extends View {
+    constructor(content) {
+        super(content, {
+            style: {
+                color: "#202020",
+                "font-size": "15px",
+                "padding-top": "8px",
+                "padding-bottom": "8px",
+            }
+        })
+    }
+}

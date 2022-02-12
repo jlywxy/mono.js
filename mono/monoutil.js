@@ -1,8 +1,8 @@
 /*
  * Mono.js 实用工具
- * 版本 1.2(21a39e)
+ * 版本 22axd4
  */
-monoversion.monoutil = "21a39e"
+monoversion.monoutil = "22axd4"
 // importView产生的缓存, 字典格式{url: 脚本源码}
 var importcache = {}
 // 开启视图导入器缓存，减少延时。在开发阶段不要设置为true。
@@ -46,10 +46,10 @@ class MoveController {
         clearInterval(this.timer)  // 清除上一个动画的完成定时器
         if (!callback) callback = () => { }
         if (this.virtualTarget) this.virtualTarget.dispose()
-        this.virtualTarget = new TinyView({style:{}})
+        this.virtualTarget = new TinyView({ style: {} })
         //this.virtualTarget.properties.style["background-color"]="red"
-        this.virtualTarget.properties.style["display"]=this.target.domElement.style["display"]
-        this.virtualTarget.properties.style["float"]=this.target.domElement.style["float"]
+        this.virtualTarget.properties.style["display"] = this.target.domElement.style["display"]
+        this.virtualTarget.properties.style["float"] = this.target.domElement.style["float"]
         this.virtualTarget.properties.style.width = (this.target.size[0]) + "px"
         this.virtualTarget.properties.style.height = (this.target.size[1]) + "px"
         this.virtualTarget.attach(destination)  // 挂载虚拟对象到目标父容器
@@ -89,4 +89,24 @@ function loadScript(url, callback) {
 }
 function loadScriptChain(chain, callback) {
     loadScriptBundle(chain, callback, () => { })
+}
+
+monoAjax.post = (body, url, fn, err) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if ((xhr.status >= 200 && xhr.status < 300 || xhr.status == 304)) {
+                fn(xhr);
+            } else {
+                err(url)
+            }
+        }
+    };
+    xhr.onerror = err
+    xhr.send(body);
+}
+
+monoAjax.postJson = (body, url, fn, err) => {
+    monoAjax.post(JSON.stringify(body), url, fn, err)
 }
