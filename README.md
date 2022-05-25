@@ -1,10 +1,14 @@
 # Mono.js Web Framework
 
+## 重要：Mono.js 已不再进行维护，并已升级到Ax.js Project: https://github.com/jlywxy/ax.js
+
+---
+
 Mono.js 是一个使用原生Javascript编写的动态前端框架，无需使用者编写html语句，仅需使用Javascript和CSS进行用户界面的构建。<br/>
 <br/>
 当前版本: 22axdc<br/>
 作者: jlywxy(jlywxy@outlook.com)<br/>
-Demo: https://jlywxy.top/<br/>
+Demo: https://jlywxy.top/mono<br/>
 <br/>
 “一个无需编写html语句的前端框架”<br/>
 ```javascript
