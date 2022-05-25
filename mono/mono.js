@@ -1,12 +1,12 @@
 console.log("\
 \n\
  * %cMono.js Web框架%c\n\
- * 版本 22axd4\n\
+ * 版本 22axdc.1\n\
  * 此框架的兼容性目前仅在Chrome、  \n   Safari和Firefox浏览器中测试过。\n\
  @ jlywxy https://github.com/jlywxy\
 \n\
 ", 'font-weight: bold;', 'font-weight: normal;')
-monoversion.mono = "22axd4"
+monoversion.mono = "22axdc.1"
 function compatibilityCheck() {  // 版本检查
     let version = monoversion.mono
     if (monoversion.monoimport == version &&
@@ -291,7 +291,7 @@ class View extends TinyView {  // 视图
             else
                 root.child.push(v.tree())
         }
-        return root
+        return JSON.stringify(root)
     }
 }
 window.URL = window.URL || window.webkitURL

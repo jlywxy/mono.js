@@ -1,38 +1,43 @@
 /*
  * Mono.js 框架导入器
- * 版本 22axd4
+ * 版本 22axdc.1
  */
-monoversion = { monoimport: "22axd4" }
+monoversion = { monoimport: "22axdc.1" }
 // ------------------------------------------------------- //
-var pageAndParamPath=window.location.search.substring(1)
-var paramPos=pageAndParamPath.indexOf("&")
-var pagePath=""
-var pageParams=""
-if(paramPos!=-1){
-    pagePath=pageAndParamPath.substring(0,paramPos)
-    pageParams=pageAndParamPath.substring(paramPos+1)
-    if(pageParams.indexOf("&")!=-1)pageParams=pageParams.substring(0,pageParams.indexOf("&"))
-}else{
-    pagePath=pageAndParamPath
-    pageParams=""
-}  
-var appPath=""
-if(pagePath==""){
-    appPath="index.monoapp.js"
-}else{
-    if(pagePath.endsWith("/")){
-        appPath=pagePath+"index.monoapp.js"
-    }else{
-        appPath=pagePath+".monoapp.js"
+var pageAndParamPath = window.location.search.substring(1)
+var paramPos = pageAndParamPath.indexOf("&")
+var pagePath = ""
+var pageParams = ""
+if (paramPos != -1) {
+    pagePath = pageAndParamPath.substring(0, paramPos)
+    pageParams = pageAndParamPath.substring(paramPos + 1)
+    if (pageParams.indexOf("&") != -1) pageParams = pageParams.substring(0, pageParams.indexOf("&"))
+} else {
+    pagePath = pageAndParamPath
+    pageParams = ""
+}
+pagePath=pagePath.replaceAll(":", "--") // 旧版URL系统兼容
+var appPath = ""
+if (pagePath == "") {
+    appPath = "index.monoapp.js"
+} else {
+    if (pagePath.endsWith("/")) {
+        appPath = pagePath + "index.monoapp.js"
+    } else {
+        appPath = pagePath + ".monoapp.js"
     }
 }
-
+var page = {  // 全局页面URL对象
+    path: pagePath,
+    params: pageParams
+}
 imports = [
     "/mono/mono.js",
     "/mono/monoutil.js",
     "/mono/monoext.js",
     appPath
 ]
+
 
 // ------------------------------------------------------- //
 
@@ -93,27 +98,9 @@ function urlTimestamp(url) {  // 为url添加时间戳，防止缓存
         return url + "&t=" + new Date().getTime()
     }
 }
-var monoBlobAjax = {
-    get: function (url, fn, err, prog) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4) {
-                if ((xhr.status >= 200 && xhr.status < 300 || xhr.status == 304)) {
-                    fn(xhr);
-                } else {
-                    err(url)
-                }
-            }
-        };
-        xhr.onerror = err
-        xhr.onprogress = prog
-        xhr.responseType = "blob"
-        xhr.send();
-    },
-}
+
 var monoAjax = {
-    get: function (url, fn, err, prog) {
+    get: function (url, fn, err, prog, blob = false) {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.onreadystatechange = function () {
@@ -127,7 +114,13 @@ var monoAjax = {
         };
         xhr.onerror = err
         xhr.onprogress = prog
+        if (blob) xhr.responseType = "blob"
         xhr.send();
+    },
+}
+var monoBlobAjax = {
+    get: function (url, fn, err, prog) {
+        monoAjax.get(url, fn, err, prog, true)
     },
 }
 function createScriptBlob(response, callback) {
@@ -152,7 +145,7 @@ class Collect {
     }
 }
 function loadScriptBundle(chain, callback, errorCallback, tickCallback) {
-    !tickCallback?tickCallback=()=>{}:0
+    !tickCallback ? tickCallback = () => { } : 0
     let importedScripts = []
     let importedURLs = []
     let cbcount = 0
@@ -187,17 +180,17 @@ function loadScriptBundle(chain, callback, errorCallback, tickCallback) {
         load()
     }
 }
-var importsNoCache = []
+var importsList = []
 for (let u of monoImporterPreference.imports) {
-    if(localStorage.getItem("frameworkNotCompatible")=="true"){
-        importsNoCache.push(urlTimestamp(u))
-    }else{
-        importsNoCache.push(u)
+    if (localStorage.getItem("frameworkNotCompatible") == "true") {
+        importsList.push(urlTimestamp(u))
+    } else {
+        importsList.push(u)
     }
 }
-loadScriptBundle(importsNoCache, () => {
+loadScriptBundle(importsList, () => {
     document.body.removeChild(loaderdiv)
-}, (e)=>{
+}, (e) => {
     printProgress(monoImporterPreference.internationalize.loadErr + e)
 }, (u) => {
     // 加载完成每一个文件

@@ -1,8 +1,8 @@
 /*
  * Mono.js 扩展视图插件
- * 版本 22axd4
+ * 版本 22axdc.1
  */
-monoversion.monoext = "22axd4"
+monoversion.monoext = "22axdc.1"
 // 视图插件设置(国际化)
 var monoExtensionPreference = {
     internationalize: {
@@ -10,7 +10,7 @@ var monoExtensionPreference = {
         retry: "重试"
     }
 }
-
+// monourl: redirect method
 // 不要修改以下内容
 class Binding {
     constructor(val, listeners) {
@@ -289,7 +289,7 @@ class MonoDialog {
                     }
                 }) :
                 new TinyView({
-                    innerHTML: text.substr(0, 500),
+                    innerHTML: text,//.substr(0, 500),
                     style: {
                         "margin-top": "-15px",
                         "margin-left": "20px",
@@ -415,7 +415,40 @@ window.addEventListener("resize", () => {
 })
 
 
-class MonoSpacer extends TinyView { constructor(height) { super({ style: { height: height + "px" } }) } }
+class VSpacer extends TinyView { constructor(height) { super({ style: { height: height + "px" } }) } }
+
+class HSpacer extends TinyView { constructor(width) { super({ style: { width: width + "px" } }) } }
+
+class HStack extends View{
+    constructor(subviews){
+        super([],{
+            tagName: "table",
+            style:{
+                width: "100%",
+                "border-collapse": "collapse",
+            }
+        })
+        let trcontainer=new View([],{
+            tagName: "tr"
+        })
+        for(let v of subviews){
+            trcontainer.subviews.push(
+                new View([v],{
+                    tagName:"td"
+                })
+            )
+        }
+        this.subviews.push(trcontainer)
+        this.trcontainer=trcontainer.subviews
+    }
+    update(){
+        for(let v of this.trcontainer){
+            v.properties.style.width=v.subviews[0].properties.style.width
+        }
+        super.update()
+    }
+}
+
 class TextHint extends TinyView {
     constructor(text) { super({ innerHTML: text, style: { "font-size": "13px", "font-weight": "bold", "margin": "8px", "margin-left": "18px", "color": "#606060" } }) } set text(value) {
         this.properties.innerHTML = value

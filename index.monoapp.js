@@ -1,5 +1,5 @@
 /*
- * Mono.js 应用
+ * Mono.js 示例应用
  * 版本 22axd4
  */
 var mono=new Mono(document)
@@ -20,11 +20,11 @@ var monoinfo = new View([
         ])
     }),
     new TinyView({
-        innerHTML: "Mono.js 版本 1.2(21a39e)<br>",
+        innerHTML: "Mono.js 版本 "+monoversion.mono+"<br>",
         style: { padding: "10px", }
     }),
-    image = new MonoImage("/appleevent2021_hero_endframe__8xosbwdvpaqe_large_2x.png"),
-    audio = new MonoAudio("local-forecast.mp3")
+    image = new MonoImage("/assets/appleevent2021_hero_endframe__8xosbwdvpaqe_large_2x.png"),
+    audio = new MonoAudio("/assets/local-forecast.mp3")
 ], {
     style: {
         transition: "width 0.2s cubic-bezier(0.17,0.73,0,1)",
@@ -35,7 +35,7 @@ var monoinfo = new View([
 // "详情"栏
 var monodetail = new View([
     new TinyView({
-        innerHTML: "Mono.js 0.1 至 22axd4 已完成的技术特性：<br>\
+        innerHTML: "Mono.js 0.1 至 "+monoversion.mono+" 已完成的技术特性：<br>\
         (*)文档树构建与动态维护、影子文档树<br>\
         (*)不会丢失数据的节点挂载、摘除和重新挂载<br>\
         (*)视图的数据绑定(Binding)<br>\

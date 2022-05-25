@@ -2,7 +2,7 @@
 
 Mono.js 是一个使用原生Javascript编写的动态前端框架，无需使用者编写html语句，仅需使用Javascript和CSS进行用户界面的构建。<br/>
 <br/>
-当前版本: 22axd4<br/>
+当前版本: 22axdc<br/>
 作者: jlywxy(jlywxy@outlook.com)<br/>
 Demo: https://jlywxy.top/<br/>
 <br/>
@@ -37,20 +37,21 @@ Mono.js将包含大部分动态页面所需的功能，并提供精心设计的�
 <br/>
 使用ViewAdapter注册响应式视图：`ViewAdapter.adapters.push({min:最小宽度,max:最大宽度,func:响应的函数})`
 ## 1.2 基本功能
-Mono.js 0.1 至 22axd4 已完成的技术特性：<br/>
+Mono.js 0.1 至 22axdc 已完成的技术特性：<br/>
 (*)文档树构建与动态维护、影子文档树<br/>
 (*)不会丢失数据的节点挂载、摘除和重新挂载<br/>
 (*)视图的数据绑定(Binding)<br/>
 (*)与使用旧版框架开发的Mono应用完全兼容<br/>
-(*)定制控件：导航栏(MonoNavigationBar)、按钮(MonoButton)、图像(MonoImage)、消息对话框(MonoDialog)、文本框和文本区域(Textbox, TextField)、列表(列表容器：List，列表按钮：ListButton，列表文本项：ListTextItem，列表项：ListItem)等<br/>
+(*)定制控件：导航栏(MonoNavigationBar)、按钮(MonoButton)、图像(MonoImage)、消息对话框(MonoDialog)、文本框和文本区域(Textbox, TextField)、列表(列表容器：List，列表按钮：ListButton，列表文本项：ListTextItem，列表项：ListItem)、横向自动布局(HStack)等<br/>
 (*)布局响应器(ViewAdapter)<br/>
 (*)兼容性检查和缓存控制<br/>
 (*)[BETA]Javascript控制下的css transition位置过渡动画(MoveController)与Cubic Bezier速度曲线<br/>
 (*)URL系统<br>
 <br>
 下一版本将要完成的技术特性：<br>
-( )Javascript过渡动画<br>
+( )Javascript控制的过渡动画<br>
 ( )视图控制器(ViewController)<br>
+( )视图叠加属性修改器
 <br>
 ## 1.3 虚拟树语法
 ### 1.3.1 声明树
@@ -231,3 +232,6 @@ function yourview(){
 * 修复了MonoDialog按键事件不响应的问题
 * monoext模块增加了新控件：Text、TextHint、List、ListHint、Textbox、TextField、ListItem、ListTextItem
 * TinyView增加text属性的getter和setter，无需手动更新
+
+22axdc:<br/>
+* 增加了新控件：HStack, HSpacer, VSpacer(原VerticalPadding, MonoSpacer)

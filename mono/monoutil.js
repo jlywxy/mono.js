@@ -1,14 +1,13 @@
 /*
  * Mono.js 实用工具
- * 版本 22axd4
+ * 版本 22axdc.1
  */
-monoversion.monoutil = "22axd4"
-// importView产生的缓存, 字典格式{url: 脚本源码}
+monoversion.monoutil = "22axdc.1"
+// importView产生的缓存, 字典格式{url: code}
 var importcache = {}
 // 开启视图导入器缓存，减少延时。在开发阶段不要设置为true。
 var enableimportcache = false
 
-// 视图文件扩展名: *.monoview.js
 function importView(url, callBack, error) {
     if (!enableimportcache || (enableimportcache && !importcache[url])) {
         monoAjax.get(url, (xhr) => {
@@ -83,14 +82,6 @@ class MoveController {
     }
 }
 
-// 以下均为旧方法, 已废弃但作为保持兼容性的备选项
-function loadScript(url, callback) {
-    loadScriptChain([url], callback)
-}
-function loadScriptChain(chain, callback) {
-    loadScriptBundle(chain, callback, () => { })
-}
-
 monoAjax.post = (body, url, fn, err) => {
     let xhr = new XMLHttpRequest();
     xhr.open('POST', url);
@@ -109,4 +100,12 @@ monoAjax.post = (body, url, fn, err) => {
 
 monoAjax.postJson = (body, url, fn, err) => {
     monoAjax.post(JSON.stringify(body), url, fn, err)
+}
+
+// 以下均为旧方法, 已废弃但作为保持兼容性的备选项
+function loadScript(url, callback) {
+    loadScriptChain([url], callback)
+}
+function loadScriptChain(chain, callback) {
+    loadScriptBundle(chain, callback, () => { })
 }
